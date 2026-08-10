@@ -1,0 +1,26 @@
+# Terraform local directory
+**/.terraform/
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+terraform.tfstate*
+
+# Terraform variables (often contains secrets)
+*.tfvars
+*.tfvars.json
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Terraform override files
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ansible retry files
+*.retry

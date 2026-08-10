@@ -1,0 +1,40 @@
+---
+- name: Create devops user
+  user:
+    name: devops
+    shell: /bin/bash
+    create_home: yes
+    state: present
+
+- name: Allow devops user to have passwordless sudo
+  lineinfile:
+    path: /etc/sudoers.d/devops
+    state: present
+    create: yes
+    line: 'devops ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Ensure .ssh directory exists for devops
+  file:
+    path: /home/devops/.ssh
+    state: directory
+    owner: devops
+    group: devops
+    mode: '0700'
+
+- name: Copy SSH keys from ubuntu to devops user
+  copy:
+    src: /home/ubuntu/.ssh/authorized_keys
+    dest: /home/devops/.ssh/authorized_keys
+    remote_src: yes
+    owner: devops
+    group: devops
+    mode: '0600'
+  ignore_errors: yes  # Ignore if it doesn't exist yet
+
+- name: Disable Root SSH Login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin no'
+  notify: Restart SSH

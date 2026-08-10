@@ -1,0 +1,21 @@
+---
+- name: Configure Bastion Server
+  hosts: bastion
+  become: true
+  roles:
+    - common
+    - users
+    - ufw
+    - fail2ban
+
+- name: Configure Private Application Server
+  hosts: app_server
+  become: true
+  roles:
+    - common
+    - users
+    - ufw
+    - fail2ban
+    - docker
+    - docker_compose
+    - ssm_secrets
