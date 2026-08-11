@@ -19,3 +19,5 @@
     - docker
     - docker_compose
     - ssm_secrets
+    - infra_services
+

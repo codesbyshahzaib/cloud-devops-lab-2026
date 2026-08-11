@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - /opt/devops/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/devops/nginx/html:/usr/share/nginx/html:ro
+    networks:
+      - devops_network
+    depends_on:
+      - jenkins
+      - sonarqube
+      - grafana
+
+  jenkins:
+    build:
+      context: /opt/devops/jenkins
+      dockerfile: Dockerfile
+    container_name: jenkins
+    restart: always
+    environment:
+      - JENKINS_OPTS=--prefix=/jenkins
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=true
+    volumes:
+      - /opt/devops/jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - devops_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=sonar
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonarpass
+    volumes:
+      - /opt/devops/postgres_data:/var/lib/postgresql/data
+    networks:
+      - devops_network
+
+  sonarqube:
+    image: sonarqube:9.9-community
+    container_name: sonarqube
+    restart: always
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://db:5432/sonar
+      - SONAR_JDBC_USERNAME=sonar
+      - SONAR_JDBC_PASSWORD=sonarpass
+      - SONAR_WEB_CONTEXT=/sonar
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - /opt/devops/sonar_data:/opt/sonarqube/data
+      - /opt/devops/sonar_extensions:/opt/sonarqube/extensions
+      - /opt/devops/sonar_logs:/opt/sonarqube/logs
+    networks:
+      - devops_network
+    depends_on:
+      - db
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    restart: always
+    volumes:
+      - /opt/devops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /opt/devops/prometheus_data:/prometheus
+    networks:
+      - devops_network
+
+  node-exporter:
+    image: prom/node-exporter:v1.6.0
+    container_name: node-exporter
+    restart: always
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+    networks:
+      - devops_network
+
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: grafana
+    restart: always
+    environment:
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(port)s/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    volumes:
+      - /opt/devops/grafana_data:/var/lib/grafana
+    networks:
+      - devops_network
+
+networks:
+  devops_network:
+    name: devops_network

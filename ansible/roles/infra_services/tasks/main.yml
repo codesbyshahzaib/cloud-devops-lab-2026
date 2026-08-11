@@ -1,0 +1,113 @@
+---
+- name: Increase vm.max_map_count for SonarQube Elasticsearch
+  sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
+    reload: yes
+
+- name: Create infrastructure directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: '0755'
+  loop:
+    - /opt/devops
+    - /opt/devops/jenkins
+    - /opt/devops/jenkins_data
+    - /opt/devops/postgres_data
+    - /opt/devops/sonar_data
+    - /opt/devops/sonar_extensions
+    - /opt/devops/sonar_logs
+    - /opt/devops/nginx
+    - /opt/devops/nginx/html
+    - /opt/devops/prometheus
+
+- name: Create Prometheus data directory with correct ownership (nobody)
+  file:
+    path: /opt/devops/prometheus_data
+    state: directory
+    owner: "65534"
+    group: "65534"
+    mode: '0775'
+
+- name: Create Grafana data directory with correct ownership (grafana)
+  file:
+    path: /opt/devops/grafana_data
+    state: directory
+    owner: "472"
+    group: "472"
+    mode: '0775'
+
+
+- name: Copy Jenkins custom Dockerfile template
+  template:
+    src: Dockerfile.jenkins.j2
+    dest: /opt/devops/jenkins/Dockerfile
+    owner: "1000"
+    group: "1000"
+    mode: '0644'
+
+- name: Copy Nginx configuration template
+  template:
+    src: nginx.conf.j2
+    dest: /opt/devops/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy Prometheus configuration template
+  template:
+    src: prometheus.yml.j2
+    dest: /opt/devops/prometheus/prometheus.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create a basic 502 HTML fallback page for Nginx
+  copy:
+    content: |
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <title>Application Deploying</title>
+          <style>
+              body { font-family: sans-serif; text-align: center; padding: 150px; background-color: #f4f6f9; color: #333; }
+              h1 { font-size: 50px; color: #2c3e50; }
+              p { font-size: 20px; }
+          </style>
+      </head>
+      <body>
+          <h1>Application Deploying</h1>
+          <p>Please wait. The Node.js application is being built and deployed via the CI/CD pipeline...</p>
+      </body>
+      </html>
+    dest: /opt/devops/nginx/html/502.html
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy Docker Compose template
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/devops/docker-compose.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Start Docker Compose services
+  shell: docker-compose up -d --build
+  args:
+    chdir: /opt/devops
+
+- name: Ensure docker.sock is writable by Jenkins container
+  file:
+    path: /var/run/docker.sock
+    mode: '0666'
+
+- name: Restart Nginx to apply config changes
+  shell: docker restart nginx
+  args:
+    chdir: /opt/devops

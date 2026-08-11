@@ -16,10 +16,16 @@ resource "aws_instance" "bastion_host" {
 }
 resource "aws_instance" "app_server" {
   ami                    = data.aws_ami.ubuntu_ami.id
-  instance_type          = "t3.micro"
+  instance_type          = "m7i-flex.large"
   subnet_id              = var.private_subnet_id
   vpc_security_group_ids = [var.app_sg_id]
   key_name               = var.key_name
   iam_instance_profile   = var.iam_instance_profile_name
   tags                   = { Name = "app-server" }
+
+  root_block_device {
+    volume_size           = 30
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
 }
