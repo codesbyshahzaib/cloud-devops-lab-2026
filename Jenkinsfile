@@ -63,7 +63,7 @@ pipeline {
             echo 'CI/CD Pipeline finished successfully!'
         }
         failure {
-            echo 'CI/CD Pipeline failed!'
+            echo 'CI/CD failed!'
         }
     }
 }
