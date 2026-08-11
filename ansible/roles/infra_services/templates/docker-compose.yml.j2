@@ -54,6 +54,7 @@ services:
       - SONAR_JDBC_USERNAME=sonar
       - SONAR_JDBC_PASSWORD=sonarpass
       - SONAR_WEB_CONTEXT=/sonar
+      - SONAR_WEB_SYSTEMPASSCODE=prometheus_sonar_passcode
     ulimits:
       nofile:
         soft: 65536
