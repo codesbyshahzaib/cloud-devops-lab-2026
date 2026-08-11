@@ -118,6 +118,18 @@
     group: "472"
     mode: '0644'
 
+- name: Fix Datasource variable in Jenkins Dashboard
+  replace:
+    path: /opt/devops/grafana_dashboards/jenkins.json
+    regexp: '\$\{DS_PROMETHEUS\}'
+    replace: 'Prometheus'
+
+- name: Fix Datasource variable in SonarQube Dashboard
+  replace:
+    path: /opt/devops/grafana_dashboards/sonarqube.json
+    regexp: '\$\{DS_PROMETHEUS\}'
+    replace: 'Prometheus'
+
 - name: Create a basic 502 HTML fallback page for Nginx
   copy:
     content: |
