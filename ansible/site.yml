@@ -8,6 +8,7 @@
     - ufw
     - fail2ban
     - cloudwatch_agent
+    - bastion_proxy
 
 - name: Configure Private Application Server
   hosts: app_server
