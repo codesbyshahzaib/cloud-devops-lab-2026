@@ -27,6 +27,17 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'sonar-scanner'
+            }
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=node-app -Dsonar.projectName='Node Application' -Dsonar.sources=app -Dsonar.host.url=http://sonarqube:9000/sonar"
+                }
+            }
+        }
+
         stage('Build Image') {
             steps {
                 echo 'Building Node.js Docker Image...'
