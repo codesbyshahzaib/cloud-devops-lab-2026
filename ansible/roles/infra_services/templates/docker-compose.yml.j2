@@ -73,6 +73,7 @@ services:
     restart: always
     volumes:
       - /opt/devops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /opt/devops/prometheus/prometheus.rules.yml:/etc/prometheus/prometheus.rules.yml:ro
       - /opt/devops/prometheus_data:/prometheus
     networks:
       - devops_network
@@ -101,6 +102,8 @@ services:
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
       - /opt/devops/grafana_data:/var/lib/grafana
+      - /opt/devops/grafana_provisioning:/etc/grafana/provisioning
+      - /opt/devops/grafana_dashboards:/var/lib/grafana/dashboards
     networks:
       - devops_network
 

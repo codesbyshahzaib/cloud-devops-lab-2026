@@ -1,0 +1,11 @@
+groups:
+  - name: JenkinsAlerts
+    rules:
+      - alert: JenkinsDown
+        expr: up{job="jenkins"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Jenkins is down (instance {% raw %}{{ $labels.instance }}{% endraw %})"
+          description: "Jenkins has been down for more than 5 minutes."
