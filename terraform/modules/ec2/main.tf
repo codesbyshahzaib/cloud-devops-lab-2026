@@ -29,3 +29,19 @@ resource "aws_instance" "app_server" {
     delete_on_termination = true
   }
 }
+
+resource "aws_cloudwatch_metric_alarm" "app_server_cpu_alarm" {
+  alarm_name          = "app-server-cpu-utilization-high"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "120"
+  statistic           = "Average"
+  threshold           = "70"
+  alarm_description   = "This metric monitors ec2 cpu utilization"
+
+  dimensions = {
+    InstanceId = aws_instance.app_server.id
+  }
+}

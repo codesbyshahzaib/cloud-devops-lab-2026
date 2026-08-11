@@ -24,6 +24,10 @@
     - /opt/devops/nginx
     - /opt/devops/nginx/html
     - /opt/devops/prometheus
+    - /opt/devops/grafana_provisioning
+    - /opt/devops/grafana_provisioning/datasources
+    - /opt/devops/grafana_provisioning/dashboards
+    - /opt/devops/grafana_dashboards
 
 - name: Create Prometheus data directory with correct ownership (nobody)
   file:
@@ -64,6 +68,46 @@
     dest: /opt/devops/prometheus/prometheus.yml
     owner: root
     group: root
+    mode: '0644'
+
+- name: Copy Prometheus rules template
+  template:
+    src: prometheus.rules.yml.j2
+    dest: /opt/devops/prometheus/prometheus.rules.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy Grafana Datasources
+  template:
+    src: grafana/provisioning/datasources/datasources.yaml.j2
+    dest: /opt/devops/grafana_provisioning/datasources/datasources.yaml
+    owner: "472"
+    group: "472"
+    mode: '0644'
+
+- name: Copy Grafana Dashboards Config
+  template:
+    src: grafana/provisioning/dashboards/dashboards.yaml.j2
+    dest: /opt/devops/grafana_provisioning/dashboards/dashboards.yaml
+    owner: "472"
+    group: "472"
+    mode: '0644'
+
+- name: Download Node Exporter Dashboard
+  get_url:
+    url: https://raw.githubusercontent.com/rfmoz/grafana-dashboards/master/prometheus/node-exporter-full.json
+    dest: /opt/devops/grafana_dashboards/node-exporter.json
+    owner: "472"
+    group: "472"
+    mode: '0644'
+
+- name: Download Jenkins Dashboard
+  get_url:
+    url: https://raw.githubusercontent.com/unfor19/jenkins-grafana-dashboard/master/jenkins-dashboard.json
+    dest: /opt/devops/grafana_dashboards/jenkins.json
+    owner: "472"
+    group: "472"
     mode: '0644'
 
 - name: Create a basic 502 HTML fallback page for Nginx
