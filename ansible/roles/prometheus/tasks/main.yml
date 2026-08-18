@@ -1,0 +1,25 @@
+---
+# -------------------------------------------------------
+# Role: prometheus
+# Purpose: Deploy Prometheus configuration files including
+#          scrape targets and alerting rules.
+# Targets: App Server only
+# -------------------------------------------------------
+
+- name: Copy Prometheus scrape configuration
+  template:
+    src: prometheus.yml.j2
+    dest: /opt/devops/prometheus/prometheus.yml
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Prometheus container
+
+- name: Copy Prometheus alerting rules
+  template:
+    src: prometheus.rules.yml.j2
+    dest: /opt/devops/prometheus/prometheus.rules.yml
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Prometheus container

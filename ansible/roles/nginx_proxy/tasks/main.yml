@@ -1,0 +1,39 @@
+---
+# -------------------------------------------------------
+# Role: nginx_proxy
+# Purpose: Deploy Nginx reverse proxy configuration files
+#          for the Docker-based Nginx container.
+# Targets: App Server only
+# -------------------------------------------------------
+
+- name: Copy Nginx reverse proxy configuration
+  template:
+    src: nginx.conf.j2
+    dest: /opt/devops/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Nginx container
+
+- name: Create 502 fallback page for when app is deploying
+  copy:
+    content: |
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <title>Application Deploying</title>
+          <style>
+              body { font-family: sans-serif; text-align: center; padding: 150px; background-color: #f4f6f9; color: #333; }
+              h1 { font-size: 50px; color: #2c3e50; }
+              p { font-size: 20px; }
+          </style>
+      </head>
+      <body>
+          <h1>Application Deploying</h1>
+          <p>Please wait. The Node.js application is being built and deployed via the CI/CD pipeline...</p>
+      </body>
+      </html>
+    dest: /opt/devops/nginx/html/502.html
+    owner: root
+    group: root
+    mode: '0644'

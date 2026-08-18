@@ -17,10 +17,14 @@
     - common
     - users
     - ufw
-    - fail2ban
     - docker
     - docker_compose
     - ssm_secrets
-    - infra_services
+    - docker_deploy
+    - nginx_proxy
+    - jenkins
+    - prometheus
+    - grafana
     - cloudwatch_agent
+    - docker_run
 

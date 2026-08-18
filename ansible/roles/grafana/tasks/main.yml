@@ -1,0 +1,64 @@
+---
+# -------------------------------------------------------
+# Role: grafana
+# Purpose: Deploy Grafana provisioning configs and download
+#          pre-built dashboards for monitoring.
+# Targets: App Server only
+# -------------------------------------------------------
+
+- name: Copy Grafana datasource provisioning config
+  template:
+    src: provisioning/datasources/datasources.yaml.j2
+    dest: /opt/devops/grafana_provisioning/datasources/datasources.yaml
+    owner: "472"
+    group: "472"
+    mode: '0644'
+  notify: Restart Grafana container
+
+- name: Copy Grafana dashboard provisioning config
+  template:
+    src: provisioning/dashboards/dashboards.yaml.j2
+    dest: /opt/devops/grafana_provisioning/dashboards/dashboards.yaml
+    owner: "472"
+    group: "472"
+    mode: '0644'
+  notify: Restart Grafana container
+
+- name: Download Node Exporter Full Dashboard (EC2 metrics)
+  get_url:
+    url: https://raw.githubusercontent.com/rfmoz/grafana-dashboards/master/prometheus/node-exporter-full.json
+    dest: /opt/devops/grafana_dashboards/node-exporter.json
+    owner: "472"
+    group: "472"
+    mode: '0644'
+  notify: Restart Grafana container
+
+- name: Download Jenkins Performance Dashboard
+  get_url:
+    url: https://grafana.com/api/dashboards/9964/revisions/1/download
+    dest: /opt/devops/grafana_dashboards/jenkins.json
+    owner: "472"
+    group: "472"
+    mode: '0644'
+  notify: Restart Grafana container
+
+- name: Download SonarQube Quality Dashboard
+  get_url:
+    url: https://grafana.com/api/dashboards/17642/revisions/1/download
+    dest: /opt/devops/grafana_dashboards/sonarqube.json
+    owner: "472"
+    group: "472"
+    mode: '0644'
+  notify: Restart Grafana container
+
+- name: Fix datasource variable in Jenkins Dashboard
+  replace:
+    path: /opt/devops/grafana_dashboards/jenkins.json
+    regexp: '\$\{DS_PROMETHEUS\}'
+    replace: 'Prometheus'
+
+- name: Fix datasource variable in SonarQube Dashboard
+  replace:
+    path: /opt/devops/grafana_dashboards/sonarqube.json
+    regexp: '\$\{DS_PROMETHEUS\}'
+    replace: 'Prometheus'

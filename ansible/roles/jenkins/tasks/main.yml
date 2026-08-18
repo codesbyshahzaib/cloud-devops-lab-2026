@@ -1,0 +1,16 @@
+---
+# -------------------------------------------------------
+# Role: jenkins
+# Purpose: Deploy Jenkins custom Dockerfile that includes
+#          Docker CLI, Ansible, and Python for CI/CD.
+# Targets: App Server only
+# -------------------------------------------------------
+
+- name: Copy Jenkins custom Dockerfile
+  template:
+    src: Dockerfile.jenkins.j2
+    dest: /opt/devops/jenkins/Dockerfile
+    owner: "1000"
+    group: "1000"
+    mode: '0644'
+  notify: Rebuild Jenkins container

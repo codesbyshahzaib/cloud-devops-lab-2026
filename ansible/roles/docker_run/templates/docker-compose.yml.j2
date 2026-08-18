@@ -39,7 +39,7 @@ services:
     environment:
       - POSTGRES_DB=sonar
       - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=sonarpass
+      - POSTGRES_PASSWORD={{ vault_postgres_password }}
     volumes:
       - /opt/devops/postgres_data:/var/lib/postgresql/data
     networks:
@@ -52,9 +52,9 @@ services:
     environment:
       - SONAR_JDBC_URL=jdbc:postgresql://db:5432/sonar
       - SONAR_JDBC_USERNAME=sonar
-      - SONAR_JDBC_PASSWORD=sonarpass
+      - SONAR_JDBC_PASSWORD={{ vault_postgres_password }}
       - SONAR_WEB_CONTEXT=/sonar
-      - SONAR_WEB_SYSTEMPASSCODE=prometheus_sonar_passcode
+      - SONAR_WEB_SYSTEMPASSCODE={{ vault_sonar_passcode }}
     ulimits:
       nofile:
         soft: 65536
