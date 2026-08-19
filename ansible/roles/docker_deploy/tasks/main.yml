@@ -30,6 +30,7 @@
     - /opt/devops/postgres_data
     - /opt/devops/sonar_data
     - /opt/devops/sonar_extensions
+    - /opt/devops/sonar_extensions/plugins
     - /opt/devops/sonar_logs
     - /opt/devops/nginx
     - /opt/devops/nginx/html
@@ -38,6 +39,15 @@
     - /opt/devops/grafana_provisioning/datasources
     - /opt/devops/grafana_provisioning/dashboards
     - /opt/devops/grafana_dashboards
+
+- name: Download SonarQube Prometheus Exporter Plugin
+  get_url:
+    url: https://github.com/DomGiorda/sonar-metrics-exporter/releases/download/v3.1.0/sonar-metrics-exporter.jar
+    dest: /opt/devops/sonar_extensions/plugins/sonar-metrics-exporter.jar
+    owner: "1000"
+    group: "1000"
+    mode: '0644'
+  notify: Restart SonarQube container
 
 - name: Create Prometheus data directory (owned by nobody:65534)
   file:
