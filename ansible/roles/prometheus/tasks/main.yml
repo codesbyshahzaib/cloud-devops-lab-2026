@@ -23,12 +23,3 @@
     group: "65534"
     mode: '0644'
   notify: Restart Prometheus container
-
-- name: Copy Alertmanager config
-  template:
-    src: alertmanager.yml.j2
-    dest: /opt/devops/prometheus/alertmanager.yml
-    owner: "65534"
-    group: "65534"
-    mode: '0644'
-  notify: Restart Prometheus container

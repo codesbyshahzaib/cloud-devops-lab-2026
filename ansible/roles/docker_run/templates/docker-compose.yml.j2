@@ -79,17 +79,6 @@ services:
     networks:
       - devops_network
 
-  alertmanager:
-    image: prom/alertmanager:v0.25.0
-    container_name: alertmanager
-    restart: always
-    ports:
-      - "9093:9093"
-    volumes:
-      - /opt/devops/prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
-    networks:
-      - devops_network
-
   node-exporter:
     image: prom/node-exporter:v1.6.0
     container_name: node-exporter
