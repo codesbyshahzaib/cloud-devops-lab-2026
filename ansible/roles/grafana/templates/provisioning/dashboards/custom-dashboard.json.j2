@@ -37,12 +37,12 @@
       "gridPos": { "h": 9, "w": 8, "x": 8, "y": 0 }
     },
     {
-      "title": "SonarQube Total Issues",
+      "title": "SonarQube Tasks Processed",
       "type": "stat",
       "datasource": "Prometheus",
       "targets": [
         {
-          "expr": "sonarqube_issues_total",
+          "expr": "sonarqube_compute_engine_tasks_processed_total",
           "refId": "A"
         }
       ],
