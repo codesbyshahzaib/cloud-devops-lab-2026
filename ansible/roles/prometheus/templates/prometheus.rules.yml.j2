@@ -1,0 +1,20 @@
+groups:
+  - name: JenkinsAlerts
+    rules:
+      - alert: JenkinsDown
+        expr: up{job="jenkins"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Jenkins is down"
+          description: "Jenkins has been down for more than 5 minutes."
+
+      - alert: HighCPUUtilization
+        expr: (100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 70
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU utilization on EC2"
+          description: "CPU usage is above 70% for more than 5 minutes."

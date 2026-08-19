@@ -1,0 +1,5 @@
+---
+- name: Restart Grafana container
+  shell: docker restart grafana
+  args:
+    chdir: /opt/devops

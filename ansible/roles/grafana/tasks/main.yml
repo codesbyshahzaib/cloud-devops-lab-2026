@@ -1,0 +1,43 @@
+---
+# -------------------------------------------------------
+# Role: grafana
+# Purpose: Deploy Grafana provisioning configs and download
+#          pre-built dashboards for monitoring.
+# Targets: App Server only
+# -------------------------------------------------------
+
+- name: Copy Grafana datasource provisioning config
+  template:
+    src: provisioning/datasources/datasources.yaml.j2
+    dest: /opt/devops/grafana_provisioning/datasources/datasources.yaml
+    owner: "472"
+    group: "472"
+    mode: '0644'
+  notify: Restart Grafana container
+
+- name: Copy Grafana dashboard provisioning config
+  template:
+    src: provisioning/dashboards/dashboards.yaml.j2
+    dest: /opt/devops/grafana_provisioning/dashboards/dashboards.yaml
+    owner: "472"
+    group: "472"
+    mode: '0644'
+  notify: Restart Grafana container
+
+- name: Remove old community dashboards
+  file:
+    path: /opt/devops/grafana_dashboards/{{ item }}
+    state: absent
+  loop:
+    - node-exporter.json
+    - jenkins.json
+    - sonarqube.json
+
+- name: Copy Custom Project Dashboard
+  template:
+    src: provisioning/dashboards/custom-dashboard.json.j2
+    dest: /opt/devops/grafana_dashboards/custom-dashboard.json
+    owner: "472"
+    group: "472"
+    mode: '0644'
+  notify: Restart Grafana container

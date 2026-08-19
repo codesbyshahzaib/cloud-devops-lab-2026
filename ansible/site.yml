@@ -1,0 +1,30 @@
+---
+- name: Configure Bastion Server
+  hosts: bastion
+  become: true
+  roles:
+    - common
+    - users
+    - ufw
+    - fail2ban
+    - cloudwatch_agent
+    - bastion_proxy
+
+- name: Configure Private Application Server
+  hosts: app_server
+  become: true
+  roles:
+    - common
+    - users
+    - ufw
+    - docker
+    - docker_compose
+    - ssm_secrets
+    - docker_deploy
+    - nginx_proxy
+    - jenkins
+    - prometheus
+    - grafana
+    - cloudwatch_agent
+    - docker_run
+

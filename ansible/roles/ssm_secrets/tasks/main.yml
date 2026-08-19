@@ -1,0 +1,21 @@
+---
+# This role requires the community.aws collection and boto3 installed on the runner.
+- name: Push Jenkins User to AWS SSM Parameter Store
+  community.aws.ssm_parameter:
+    name: "/jenkins/admin_user"
+    description: "Jenkins Admin Username"
+    value: "{{ jenkins_admin_user }}"
+    string_type: "SecureString"
+    region: "us-east-1"
+  delegate_to: localhost
+  become: false
+
+- name: Push Jenkins Password to AWS SSM Parameter Store
+  community.aws.ssm_parameter:
+    name: "/jenkins/admin_password"
+    description: "Jenkins Admin Password"
+    value: "{{ jenkins_admin_password }}"
+    string_type: "SecureString"
+    region: "us-east-1"
+  delegate_to: localhost
+  become: false

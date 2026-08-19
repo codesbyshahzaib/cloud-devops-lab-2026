@@ -1,0 +1,5 @@
+---
+- name: Restart Prometheus container
+  shell: docker restart prometheus
+  args:
+    chdir: /opt/devops

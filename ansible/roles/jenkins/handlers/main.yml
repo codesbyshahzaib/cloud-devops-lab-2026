@@ -1,0 +1,5 @@
+---
+- name: Rebuild Jenkins container
+  shell: docker compose up -d --build jenkins
+  args:
+    chdir: /opt/devops

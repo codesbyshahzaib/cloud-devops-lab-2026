@@ -1,0 +1,27 @@
+---
+- name: Copy Docker Compose file
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/devops/docker-compose.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Stop existing Docker Compose services
+  shell: docker compose down || true
+  args:
+    chdir: /opt/devops
+
+- name: Remove any conflicting containers
+  shell: docker rm -f nginx jenkins postgres sonarqube prometheus node-exporter grafana || true
+  ignore_errors: yes
+
+- name: Start Docker Compose services
+  shell: docker compose up -d --build --remove-orphans
+  args:
+    chdir: /opt/devops
+
+- name: Ensure docker.sock is writable by Jenkins container
+  file:
+    path: /var/run/docker.sock
+    mode: '0666'

@@ -1,0 +1,4 @@
+variable "vpc_id" {
+  description = "ID of the VPC where SG is created"
+  type        = string
+}
