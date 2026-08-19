@@ -24,41 +24,20 @@
     mode: '0644'
   notify: Restart Grafana container
 
-- name: Download Node Exporter Full Dashboard (EC2 metrics)
-  get_url:
-    url: https://raw.githubusercontent.com/rfmoz/grafana-dashboards/master/prometheus/node-exporter-full.json
-    dest: /opt/devops/grafana_dashboards/node-exporter.json
+- name: Remove old community dashboards
+  file:
+    path: /opt/devops/grafana_dashboards/{{ item }}
+    state: absent
+  loop:
+    - node-exporter.json
+    - jenkins.json
+    - sonarqube.json
+
+- name: Copy Custom Project Dashboard
+  template:
+    src: provisioning/dashboards/custom-dashboard.json.j2
+    dest: /opt/devops/grafana_dashboards/custom-dashboard.json
     owner: "472"
     group: "472"
     mode: '0644'
   notify: Restart Grafana container
-
-- name: Download Jenkins Performance Dashboard
-  get_url:
-    url: https://grafana.com/api/dashboards/9964/revisions/1/download
-    dest: /opt/devops/grafana_dashboards/jenkins.json
-    owner: "472"
-    group: "472"
-    mode: '0644'
-  notify: Restart Grafana container
-
-- name: Download SonarQube Quality Dashboard
-  get_url:
-    url: https://grafana.com/api/dashboards/17642/revisions/1/download
-    dest: /opt/devops/grafana_dashboards/sonarqube.json
-    owner: "472"
-    group: "472"
-    mode: '0644'
-  notify: Restart Grafana container
-
-- name: Fix datasource variable in Jenkins Dashboard
-  replace:
-    path: /opt/devops/grafana_dashboards/jenkins.json
-    regexp: '\$\{DS_PROMETHEUS\}'
-    replace: 'Prometheus'
-
-- name: Fix datasource variable in SonarQube Dashboard
-  replace:
-    path: /opt/devops/grafana_dashboards/sonarqube.json
-    regexp: '\$\{DS_PROMETHEUS\}'
-    replace: 'Prometheus'
