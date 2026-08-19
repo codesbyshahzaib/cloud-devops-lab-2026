@@ -16,14 +16,14 @@ pipeline {
         stage('Lint') {
             steps {
                 echo 'Running ESLint in Node.js container...'
-                sh 'docker run --rm -v /opt/devops/jenkins_data/workspace/${JOB_NAME}/app:/usr/src/app -w /usr/src/app node:18-alpine sh -c "npm install && npm run lint"'
+                sh 'docker run --rm -v /opt/devops/jenkins_data/jobs/${JOB_NAME}/workspace/app:/usr/src/app -w /usr/src/app node:18-alpine sh -c "npm install && npm run lint"'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running Jest unit tests in Node.js container...'
-                sh 'docker run --rm -v /opt/devops/jenkins_data/workspace/${JOB_NAME}/app:/usr/src/app -w /usr/src/app node:18-alpine sh -c "npm run test"'
+                sh 'docker run --rm -v /opt/devops/jenkins_data/jobs/${JOB_NAME}/workspace/app:/usr/src/app -w /usr/src/app node:18-alpine sh -c "npm run test"'
             }
         }
 
