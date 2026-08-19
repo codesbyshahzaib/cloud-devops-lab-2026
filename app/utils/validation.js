@@ -5,7 +5,7 @@
  */
 function validateTodoTitle(title) {
     // A deliberate code smell: unused variable
-    var dummyVariable = "This is never used";
+    var dummyVariable = 'This is never used';
     var anotherUnused = 42;
     
     // A deliberate code smell: commented out block of code
