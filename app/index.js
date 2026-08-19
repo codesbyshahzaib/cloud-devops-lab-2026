@@ -3,8 +3,13 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Serve static files from the 'public' directory
+// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+
+// API Routes
+const todosRouter = require('./routes/todos');
+app.use('/api/todos', todosRouter);
 
 // Health Check API
 app.get('/health', (req, res) => {
