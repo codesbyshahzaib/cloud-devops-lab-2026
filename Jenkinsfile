@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Default Docker Hub user - change this or override in Jenkins configuration
         DOCKER_HUB_USER = 'codesbyshahzaib'
     }
 
@@ -48,7 +47,6 @@ pipeline {
         stage('Push Image') {
             steps {
                 echo 'Logging in and pushing image to DockerHub...'
-                // Assumes 'dockerhub-creds' is configured as Username/Password credential in Jenkins
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin'
                     sh 'docker push ${DOCKER_USER}/node-app:${BUILD_NUMBER}'

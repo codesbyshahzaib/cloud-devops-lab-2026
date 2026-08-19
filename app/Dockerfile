@@ -14,6 +14,8 @@ COPY package*.json ./
 RUN npm install --only=production
 COPY index.js ./
 COPY public/ ./public/
+COPY routes/ ./routes/
+COPY utils/ ./utils/
 
 ENV NODE_ENV=production
 ENV PORT=3000
