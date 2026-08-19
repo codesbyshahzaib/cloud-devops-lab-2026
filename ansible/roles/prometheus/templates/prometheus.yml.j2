@@ -27,5 +27,6 @@ scrape_configs:
 
   - job_name: 'sonarqube-quality'
     metrics_path: '/sonar/api/prometheus/metrics'
+    bearer_token: '{{ vault_sonar_passcode }}'
     static_configs:
       - targets: ['sonarqube:9000']
