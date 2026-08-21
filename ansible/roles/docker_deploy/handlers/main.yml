@@ -1,5 +1,1 @@
 ---
-- name: Restart SonarQube container
-  command: docker-compose -f /opt/devops/docker-compose.yml restart sonarqube
-  args:
-    chdir: /opt/devops

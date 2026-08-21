@@ -1,10 +1,5 @@
 ---
-# -------------------------------------------------------
-# Role: nginx_proxy
-# Purpose: Deploy Nginx reverse proxy configuration files
-#          for the Docker-based Nginx container.
 # Targets: App Server only
-# -------------------------------------------------------
 
 - name: Copy Nginx reverse proxy configuration
   template:
