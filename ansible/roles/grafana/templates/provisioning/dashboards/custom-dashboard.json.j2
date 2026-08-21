@@ -37,21 +37,121 @@
       "gridPos": { "h": 9, "w": 8, "x": 8, "y": 0 }
     },
     {
-      "title": "SonarQube Tasks Processed",
+      "title": "SonarQube Uptime (minutes)",
       "type": "stat",
       "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "green", "value": 30 }
+            ]
+          }
+        }
+      },
       "targets": [
         {
-          "expr": "sonarqube_compute_engine_tasks_processed_total",
+          "expr": "sonarqube_web_uptime_minutes",
           "refId": "A"
         }
       ],
       "gridPos": { "h": 9, "w": 8, "x": 16, "y": 0 }
+    },
+    {
+      "title": "SonarQube Pending CE Tasks",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sonarqube_compute_engine_pending_tasks_total",
+          "legendFormat": "Pending Tasks",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 9, "w": 8, "x": 0, "y": 9 }
+    },
+
+    {
+      "title": "Code Quality: Bugs",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(sonarqube_bugs) by (project)",
+          "legendFormat": "{% raw %}{{project}}{% endraw %}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 9, "w": 8, "x": 0, "y": 18 }
+    },
+    {
+      "title": "Code Quality: Vulnerabilities",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(sonarqube_vulnerabilities) by (project)",
+          "legendFormat": "{% raw %}{{project}}{% endraw %}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 9, "w": 8, "x": 8, "y": 18 }
+    },
+    {
+      "title": "Code Quality: Code Smells",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "orange", "value": 50 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(sonarqube_code_smells) by (project)",
+          "legendFormat": "{% raw %}{{project}}{% endraw %}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 9, "w": 8, "x": 16, "y": 18 }
     }
   ],
   "schemaVersion": 38,
   "style": "dark",
-  "tags": [],
+  "tags": ["sonarqube", "jenkins", "monitoring", "code-quality"],
   "templating": {
     "list": []
   },
@@ -63,5 +163,5 @@
   "timezone": "",
   "title": "Project Monitoring Dashboard",
   "uid": "project-dashboard",
-  "version": 1
+  "version": 3
 }

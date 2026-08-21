@@ -26,5 +26,6 @@
     - prometheus
     - grafana
     - cloudwatch_agent
+    - sonar_exporter
     - docker_run
 

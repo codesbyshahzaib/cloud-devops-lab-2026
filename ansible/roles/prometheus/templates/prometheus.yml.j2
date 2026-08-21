@@ -25,3 +25,7 @@ scrape_configs:
     static_configs:
       - targets: ['sonarqube:9000']
 
+  - job_name: 'sonar-exporter'
+    static_configs:
+      - targets: ['sonar_exporter:9101']
+

@@ -68,6 +68,19 @@ services:
     depends_on:
       - db
 
+  sonar_exporter:
+    build: /opt/devops/sonar_exporter
+    container_name: sonar_exporter
+    restart: always
+    environment:
+      - SONAR_URL=http://sonarqube:9000/sonar
+      - SONAR_TOKEN={{ vault_sonar_user_token | default('') }}
+      - POLL_INTERVAL=60
+    networks:
+      - devops_network
+    depends_on:
+      - db
+
   prometheus:
     image: prom/prometheus:v2.45.0
     container_name: prometheus
